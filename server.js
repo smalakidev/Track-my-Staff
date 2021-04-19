@@ -10,4 +10,10 @@ var connection = mysql.createConnection({
     user: "root",
     password: "1?qK10!+",
     database: "employeetracker"
-  });
+});
+
+connection.connect(function (err) {
+    if (err) throw err
+    console.log("Connected as Id" + connection.threadId)
+    startPrompt();
+});
