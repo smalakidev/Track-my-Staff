@@ -341,3 +341,36 @@ function updateEmpRole() {
       })
   })
 };
+//function to add a new role
+function addRole() {
+    let query1 = `SELECT * FROM role`
+    connection.query(query1, (err, data) => {
+      if (err) throw err
+      inquirer.prompt([
+        {
+          type: "input",
+          name: "roleId",
+          message: "Please enter id for new role"
+        }, {
+          type: "input",
+          name: "role",
+          message: "Please enter title of new role"
+        }, {
+          type: "input",
+          name: "salary",
+          message: "Please enter salary for new role"
+        }, {
+          type: "input",
+          name: "deptId",
+          message: "Please enter department id for new role"
+        }])
+        .then(function (answers) {
+          let query2 = `INSERT INTO role VALUES (?,?,?,?)`
+          connection.query(query2, [answers.roleId, answers.role, answers.salary, answers.deptId], function (err) {
+            if (err) throw err;
+            console.log(`${answers.role} added as new role`)
+            init();
+          })
+        })
+    })
+  }
