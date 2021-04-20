@@ -148,7 +148,7 @@ function displayEmByDep() {
     })
   };
   
-  //function to display employees by manager//
+  //function to display employees by manager
 function displayEmByManager() {
     let query1 = `SELECT * FROM employee e WHERE e.manager_id IS NULL`
   
@@ -182,7 +182,7 @@ function displayEmByManager() {
     })
   };
 
-  //function to add a new employee
+  //This is the fucntion to add new employee
 function addEmployee() {
     let addQuery = `SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, department.name,
     role.salary, employee.manager_id 
@@ -225,3 +225,119 @@ function addEmployee() {
         })
     })
   };
+
+  //This function is for removing the employees
+function removeEmployee() {
+    let query1 = `SELECT * FROM employee`
+    connection.query(query1, (err, res) => {
+      if (err) throw err;
+      inquirer.prompt([{
+        type: "list",
+        name: "emId",
+        message: "Please select employee to remove",
+        choices: res.map(employee => {
+          return { name: `${employee.first_name} ${employee.last_name}`, value: employee.id }
+        })
+      }])
+        .then(answer => {
+          let query2 = `DELETE FROM employee WHERE ?`
+          connection.query(query2, [{ id: answer.emId }], (err) => {
+            if (err) throw err;
+            console.log("Employee removed");
+            init();
+          })
+        })
+    })
+  };
+  
+  function removeRole() {
+    let query1 = `SELECT * FROM role`
+    connection.query(query1, (err, res) => {
+      if (err) throw err;
+      inquirer.prompt([{
+        type: "list",
+        name: "roleId",
+        message: "Please select role to remove",
+        choices: res.map(roles => {
+          return { name: `${roles.title}`, value: roles.id }
+        })
+      }])
+        .then(answer => {
+          let query2 = `DELETE FROM role WHERE ?`
+          connection.query(query2, [{ id: answer.roleId }], (err) => {
+            if (err) throw err;
+            console.log("Role removed");
+            init();
+          })
+        })
+    })
+  };
+
+  /function to update employee role
+function updateEmpRole() {
+  let query = ("SELECT * FROM employee");
+
+  connection.query(query, (err, response) => {
+
+    const employees = response.map(function (element) {
+      return {
+        name: `${element.first_name} ${element.last_name}`,
+        value: element.id
+      }
+    });
+
+    inquirer.prompt([{
+      type: "list",
+      name: "employeeId",
+      message: "Which employees role do you want to update",
+      choices: employees
+    }])
+      .then(input1 => {
+        connection.query("SELECT * FROM role", (err, data) => {
+
+          const roles = data.map(function (role) {
+            return {
+              name: role.title,
+              value: role.id
+            }
+          });
+
+          inquirer.prompt([{
+            type: "list",
+            name: "roleId",
+            message: "What's the new role",
+            choices: roles
+          }])
+            .then(input2 => {
+              const query1 = `UPDATE employee
+        SET employee.role_id = ? 
+        WHERE employee.id = ?`
+              connection.query(query1, [input2.roleId, input1.employeeId], function (err, res) {
+                var tempPosition;
+                // will return the updated position
+                for (var k = 0; k < roles.length; k++) {
+                  if (roles[k].value == input2.roleId) {
+                    tempPosition = roles[k].name;
+                  }
+                }
+                // will return the employee
+                var tempName;
+                for (var g = 0; g < employees.length; g++) {
+                  if (employees[g].value == input1.employeeId) {
+                    tempName = employees[g].name;
+                  }
+                }
+
+                if (res.changedRows === 1) {
+                  console.log(`Successfully updated ${tempName} to position of ${tempPosition}`);
+                } else {
+                  console.log(`Error: ${tempName}'s current position is ${tempPosition}`)
+                }
+                // console.log(res.changedRows);
+                init();
+              })
+            })
+        })
+      })
+  })
+};
