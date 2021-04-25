@@ -399,3 +399,27 @@ function addDepartment() {
         })
     })
   };
+
+  //Funciton to remove Department
+  function removeDept() {
+    let query1 = `SELECT * FROM department`
+    connection.query(query1, (err, res) => {
+      if (err) throw err;
+      inquirer.prompt([{
+        type: "list",
+        name: "deptId",
+        message: "Please select a department to remove",
+        choices: res.map(departments => {
+          return { name: `${departments.name}`, value: departments.id }
+        })
+      }])
+        .then(answer => {
+          let query2 = `DELETE FROM department WHERE ?`
+          connection.query(query2, [{ id: answer.deptId }], (err) => {
+            if (err) throw err;
+            console.log("Department removed")
+            init();
+          })
+        })
+    })
+  };
