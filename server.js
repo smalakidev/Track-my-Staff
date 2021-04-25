@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-require("console.table");
+const consoleTable = require("console.table");
 
 //Here we are conducting the connection to mysql
 
@@ -9,13 +9,13 @@ var connection = mysql.createConnection({
     port: 3306,
     user: "root",
     password: "1?qK10!+",
-    database: "employeetracker"
+    database: "employee_tracker_db"
 });
 
 connection.connect(function (err) {
     if (err) throw err
     console.log("Connected as Id" + connection.threadId)
-    startPrompt();
+    init();
 });
 
 //This function initializes the application
@@ -273,7 +273,7 @@ function removeEmployee() {
     })
   };
 
-  /function to update employee role
+  //function to update employee role
 function updateEmpRole() {
   let query = ("SELECT * FROM employee");
 

@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/smalakidev/Track-my-Staff/issues"
   },
-  "homepage": "https://github.com/smalakidev/Track-my-Staff#readme"
+  "homepage": "https://github.com/smalakidev/Track-my-Staff#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.0.0",
+    "mysql": "^2.18.1"
+  }
 }
