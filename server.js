@@ -374,3 +374,28 @@ function addRole() {
         })
     })
   }
+
+  //function to add new department..
+function addDepartment() {
+    let query1 = `SELECT * FROM department`
+    connection.query(query1, (err, res) => {
+      if (err) throw err
+      inquirer.prompt([{
+        type: "input",
+        name: "deptId",
+        message: "Please enter id for new department"
+      }, {
+        type: "input",
+        name: "deptName",
+        message: "Please enter name for new department"
+      }])
+        .then(answers => {
+          let query2 = `INSERT INTO department VALUES (?,?)`
+          connection.query(query2, [answers.deptId, answers.deptName], (err) => {
+            if (err) throw err
+            console.log(`${answers.deptName} added as a new department`)
+            init();
+          })
+        })
+    })
+  };
